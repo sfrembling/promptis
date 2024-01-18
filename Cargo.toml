@@ -5,6 +5,7 @@ edition = "2021"
 authors = ["Shea Frembling"]
 description = "Simplify getting user input in the CLI"
 license = "MIT"
+repository = "https://github.com/sfrembling/promptis"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
