@@ -22,19 +22,19 @@ impl Input {
     }
 
     /// Sets the prompt that will be displayed to the user.
-    pub fn prompt(mut self, p: &str) -> Self {
+    pub fn prompt(&mut self, p: &str) -> &mut Self {
         self.user_prompt = p.to_owned();
         self
     }
 
     /// Sets a phrase that, when entered, will end the program early.
-    pub fn quit(mut self, q: &str) -> Self {
+    pub fn quit(&mut self, q: &str) -> &mut Self {
         self.user_quit = Some(q.into());
         self
     }
 
     /// Sets an error message that will be displayed to the user if they enter something invalid.
-    pub fn err_msg(mut self, m: &str) -> Self {
+    pub fn err_msg(&mut self, m: &str) -> &mut Self {
         self.user_errmsg = Some(m.into());
         self
     }
@@ -42,6 +42,15 @@ impl Input {
     /// Waits until the user responds with something that can be parsed to `T`.
     ///
     /// If a `quit` trigger has been set and later read from the user, will exit early
+    ///
+    /// Example:
+    /// ```
+    /// let data: i32 = Input::new()
+    ///     .prompt("Enter a number: ")
+    ///     .wait();
+    ///
+    /// println!("Your number is {}", data);
+    /// ```
     pub fn wait<T>(&self) -> T
     where
         T: std::str::FromStr,
@@ -72,6 +81,18 @@ impl Input {
     /// Similar to `wait`, except will return after the user inputs anything.
     ///
     /// If the user input doesn't parse to `T`, `None` is returned.
+    ///
+    /// Example
+    /// ```
+    /// let data: Option<i32> = Input::new()
+    ///     .prompt("Enter a number: ")
+    ///     .read();
+    ///
+    /// match data {
+    ///     Some(number) => println!("You entered {}", number),
+    ///     None => println!("You didn't enter a number")
+    /// }
+    /// ```
     pub fn read<T>(&self) -> Option<T>
     where
         T: std::str::FromStr,

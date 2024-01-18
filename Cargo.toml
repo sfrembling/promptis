@@ -1,6 +1,6 @@
 [package]
 name = "promptis"
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 authors = ["Shea Frembling"]
 description = "Simplify getting user input in the CLI"
