@@ -91,15 +91,22 @@ impl Input {
         T: std::str::FromStr,
     {
         print!("{}", self.user_prompt);
-        if let Err(e) = stdout().flush() {
-            println!("IO Error: {}; Continuing...", e);
-        }
+        self.handle_io(|| stdout().flush());
         let mut buffer = String::new();
-        if let Err(e) = stdin().read_line(&mut buffer) {
-            println!("IO Error: {}; Continuing...", e);
-        }
+        self.handle_io(|| stdin().read_line(&mut buffer));
         self.check_quit(&buffer);
         buffer.trim().parse().ok()
+    }
+
+    /// Handles [std::io] operations; will simply print that an error
+    /// occurred and continue on
+    fn handle_io<T, F>(&self, mut io: F)
+    where
+        F: FnMut() -> std::io::Result<T>,
+    {
+        if let Err(e) = io() {
+            println!("IO Error: {}; Continuing...", e);
+        }
     }
 
     /// Similar to `wait`, except will return after the user inputs anything.
