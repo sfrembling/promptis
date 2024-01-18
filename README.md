@@ -13,6 +13,10 @@ A Rust crate to simplify getting user input in the CLI.
 // Prompt for the user's name and wait for them to respond with input
 let name: String = Input::new().prompt("Enter your name: ").wait();
 
-// Prompt the user for a number and wait for them to respond, displaying the error if they input something else
-let id: u32 = Input::new().prompt("Enter a number: ").err_msg("Not a number; please retry").wait();
+// Prompt the user for a number and wait for them to respond, 
+// displaying the error if they input something else
+let id: u32 = Input::new()
+    .prompt("Enter a number: ")
+    .err_msg("Not a number; please retry")
+    .wait();
 ```
