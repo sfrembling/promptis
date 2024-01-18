@@ -57,7 +57,7 @@ impl Input {
     {
         let mut response = None;
 
-        while let None = response {
+        while response.is_none() {
             response = self.get_data();
             self.check_error(&response);
         }
@@ -78,7 +78,7 @@ impl Input {
 
     /// Checks whether `response` was entered incorrectly, and if so, prints the error message
     fn check_error<T>(&self, response: &Option<T>) {
-        if let None = response {
+        if response.is_none() {
             if let Some(msg) = &self.user_errmsg {
                 println!("{}", msg);
             }
