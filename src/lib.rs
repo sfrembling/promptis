@@ -58,24 +58,48 @@ impl Input {
         let mut response = None;
 
         while let None = response {
-            print!("{}", self.user_prompt);
-            stdout().flush().unwrap();
-            let mut buffer = String::new();
-            stdin().read_line(&mut buffer).unwrap();
-            if let Some(trigger) = &self.user_quit {
-                if trigger == buffer.trim() {
-                    std::process::exit(0);
-                }
-            }
-            response = buffer.trim().parse().ok();
-            if let None = response {
-                if let Some(msg) = &self.user_errmsg {
-                    println!("{}", msg);
-                }
-            }
+            response = self.get_data();
+            self.check_error(&response);
         }
 
+        // At this point we know that this holds a value
+        // so unwrapping should be fine.
         response.unwrap()
+    }
+
+    /// Checks if the user's input is the quit trigger, and if so, ends the program
+    fn check_quit(&self, message: &str) {
+        if let Some(trigger) = &self.user_quit {
+            if trigger == message.trim() {
+                std::process::exit(0);
+            }
+        }
+    }
+
+    /// Checks whether `response` was entered incorrectly, and if so, prints the error message
+    fn check_error<T>(&self, response: &Option<T>) {
+        if let None = response {
+            if let Some(msg) = &self.user_errmsg {
+                println!("{}", msg);
+            }
+        }
+    }
+
+    /// Handles getting data from the user
+    fn get_data<T>(&self) -> Option<T>
+    where
+        T: std::str::FromStr,
+    {
+        print!("{}", self.user_prompt);
+        if let Err(e) = stdout().flush() {
+            println!("IO Error: {}; Continuing...", e);
+        }
+        let mut buffer = String::new();
+        if let Err(e) = stdin().read_line(&mut buffer) {
+            println!("IO Error: {}; Continuing...", e);
+        }
+        self.check_quit(&buffer);
+        buffer.trim().parse().ok()
     }
 
     /// Similar to `wait`, except will return after the user inputs anything.
@@ -97,15 +121,6 @@ impl Input {
     where
         T: std::str::FromStr,
     {
-        print!("{}", self.user_prompt);
-        stdout().flush().unwrap();
-        let mut buffer = String::new();
-        stdin().read_line(&mut buffer).unwrap();
-        if let Some(trigger) = &self.user_quit {
-            if trigger == buffer.trim() {
-                std::process::exit(0);
-            }
-        }
-        buffer.trim().parse().ok()
+        self.get_data()
     }
 }
