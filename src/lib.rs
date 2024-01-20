@@ -163,6 +163,62 @@ impl Input {
         }
     }
 
+    /// Presents a series of options to the user from which they can choose one.
+    ///
+    /// This function will guarantee that the user chooses something present in `opts`
+    ///
+    /// This function can return `Err` if the user's option doesn't parse into `T`
+    ///
+    /// Example:
+    /// ```
+    /// let choice: String = Input::new()
+    ///     .wait_opts(&["First", "Second", "Third"], "Enter your choice: ")
+    ///     .unwrap();
+    ///
+    /// match choice.as_str() {
+    ///     "First" => println!("1st!"),
+    ///     "Second" => println!("2nd"),
+    ///     "Third" => println!("3rd..")
+    /// }
+    /// ```
+    ///
+    /// The user in the above case would see the following:
+    /// ```markdown
+    /// 1. First
+    /// 2. Second
+    /// 3. Third
+    /// Enter your choice:
+    /// ```
+    pub fn wait_opts<T>(&self, opts: &[&str], p: &str) -> Result<T, T::Err>
+    where
+        T: std::str::FromStr,
+    {
+        let index;
+
+        // This is so that the input object will respect err_msg rules and quit triggers
+        let mut ic = self.clone();
+
+        loop {
+            for (i, v) in opts.iter().enumerate() {
+                println!("{}. {}", i + 1, v);
+            }
+
+            let result = ic.prompt(p).wait();
+
+            if (1..=opts.len()).contains(&result) {
+                index = result - 1;
+                break;
+            } else {
+                println!(
+                    "Please enter a number within the bounds {:?}",
+                    1..=opts.len()
+                );
+            }
+        }
+
+        opts[index].parse()
+    }
+
     /// Similar to `wait`, except will return after the user inputs anything.
     ///
     /// If the user input doesn't parse to `T`, `None` is returned.
