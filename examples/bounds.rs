@@ -1,13 +1,12 @@
+use std::fmt::Display;
+
 use promptis::Input;
 
 fn main() {
-    let choice: Choice = Input::new()
-        .quit("quit")
-        .wait_opts(
-            &["Yes", "No"],
-            &format!("Do you want to hear the dog speak?\nYour choice: "),
-        )
-        .unwrap();
+    let choice = Input::new().quit("quit").wait_opts(
+        &[Choice::Yes, Choice::No],
+        &format!("Do you want to hear the dog speak?\nYour choice: "),
+    );
 
     match choice {
         Choice::Yes => println!("Bark!"),
@@ -15,19 +14,14 @@ fn main() {
     }
 }
 
+#[derive(Debug, Clone)]
 enum Choice {
     Yes,
     No,
 }
 
-impl std::str::FromStr for Choice {
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.to_ascii_uppercase().as_str() {
-            "YES" => Ok(Self::Yes),
-            "NO" => Ok(Self::No),
-            _ => Err(()),
-        }
+impl Display for Choice {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
     }
-
-    type Err = ();
 }

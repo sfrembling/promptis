@@ -189,9 +189,9 @@ impl Input {
     /// 3. Third
     /// Enter your choice:
     /// ```
-    pub fn wait_opts<T>(&self, opts: &[&str], p: &str) -> Result<T, T::Err>
+    pub fn wait_opts<T>(&self, opts: &[T], p: &str) -> T
     where
-        T: std::str::FromStr,
+        T: std::fmt::Display + Clone,
     {
         let index;
 
@@ -216,7 +216,7 @@ impl Input {
             }
         }
 
-        opts[index].parse()
+        opts[index].clone()
     }
 
     /// Presents a simple "yes/no" option to the user, returning their choice
