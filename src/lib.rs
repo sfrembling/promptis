@@ -59,7 +59,10 @@
 //! println!("Name: {}\nAge: {}\nWeight: {}", name, age, weight);
 //! ```
 
-use std::io::{stdin, stdout, Write};
+use std::{
+    fmt::Display,
+    io::{stdin, stdout, Write},
+};
 
 /// Handler for easily getting user input from the command line
 #[derive(Debug, Default, Clone)]
@@ -217,6 +220,35 @@ impl Input {
         }
 
         opts[index].parse()
+    }
+
+    /// Presents a simple "yes/no" option to the user, returning their choice
+    ///
+    /// This is useful for binary decisions, i.e. asking for confirmation before progressing
+    ///
+    /// Example:
+    /// ```
+    /// if Input::new().choose("Continue?") {
+    ///     println!("You continued.");
+    /// }
+    /// ```
+    /// What the user would see:
+    /// ```plaintext
+    /// Continue? [y/n]
+    /// ```
+    pub fn choose(&self, p: &str) -> bool {
+        loop {
+            let inp: char = self.clone().prompt(&format!("{} [y/n] ", p)).wait();
+            match inp.to_ascii_uppercase() {
+                'Y' => {
+                    return true;
+                }
+                'N' => {
+                    return false;
+                }
+                _ => {}
+            }
+        }
     }
 
     /// Similar to `wait`, except will return after the user inputs anything.
