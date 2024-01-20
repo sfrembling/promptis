@@ -22,7 +22,7 @@ impl Input {
     }
 
     /// Sets the prompt that will be displayed to the user.
-    pub fn prompt(mut self, p: &str) -> Self {
+    pub fn prompt(&mut self, p: &str) -> &mut Self {
         self.user_prompt = p.to_owned();
         self
     }
