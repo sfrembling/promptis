@@ -59,10 +59,7 @@
 //! println!("Name: {}\nAge: {}\nWeight: {}", name, age, weight);
 //! ```
 
-use std::{
-    fmt::Display,
-    io::{stdin, stdout, Write},
-};
+use std::io::{stdin, stdout, Write};
 
 /// Handler for easily getting user input from the command line
 #[derive(Debug, Default, Clone)]
