@@ -4,6 +4,60 @@
 //! - `cargo run --example closing` demonstrates quitting the program early
 //! - `cargo run --example data` demonstrates getting data from the user
 //! - `cargo run --example hello` is a basic hello world program
+//!
+//! Example usage:
+//! ```
+//! let name: String = Input::new()
+//!     .prompt("Enter your name: ")
+//!     .wait();
+//!
+//! println!("Hello, {}!", name);
+//! ```
+//!
+//! You can also set error messages for when the user messes up the input.
+//! ```
+//! let number: i32 = Input::new()
+//!     .err_msg("That wasn't a number; please try again")
+//!     .prompt("Enter a number: ")
+//!     .wait();
+//!
+//! println!("Your number is: {}", number);
+//! ```
+//!
+//! You can choose to just get the first input, regardless of whether it's good.
+//! ```
+//! let number: Option<i32> = Input::new()
+//!     .prompt("Enter a number: ")
+//!     .read();
+//!
+//! match number {
+//!     Some(n) => println!("Your number is: {}"),
+//!     None => println!("You didn't enter a number!")
+//! }
+//! ```
+//!
+//! You can specify a keyword that will end the program when entered
+//! ```
+//! let number: i32 = Input::new()
+//!     .quit("quit") // this can result in the program ending early
+//!     .prompt("Enter a number: ")
+//!     .wait();
+//!
+//! println!("Your number is: {}", number);
+//! ```
+//!
+//! You can re-use the same input object for multiple inputs.
+//! ```
+//! let mut input = Input::new()
+//!     .err_msg("Unexpected input; please retry")
+//!     .quit("quit");
+//!
+//! let name: String = input.prompt("Enter your name: ").wait();
+//! let age: u32 = input.prompt("Enter your age: ").wait();
+//! let weight: f64 = input.prompt("Enter your weight: ").wait();
+//!
+//! println!("Name: {}\nAge: {}\nWeight: {}", name, age, weight);
+//! ```
 
 use std::io::{stdin, stdout, Write};
 
@@ -28,13 +82,13 @@ impl Input {
     }
 
     /// Sets a phrase that, when entered, will end the program early.
-    pub fn quit(&mut self, q: &str) -> &mut Self {
+    pub fn quit(mut self, q: &str) -> Self {
         self.user_quit = Some(q.into());
         self
     }
 
     /// Sets an error message that will be displayed to the user if they enter something invalid.
-    pub fn err_msg(&mut self, m: &str) -> &mut Self {
+    pub fn err_msg(mut self, m: &str) -> Self {
         self.user_errmsg = Some(m.into());
         self
     }
