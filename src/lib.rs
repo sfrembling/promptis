@@ -22,19 +22,19 @@ impl Input {
     }
 
     /// Sets the prompt that will be displayed to the user.
-    pub fn prompt(&mut self, p: &str) -> &mut Self {
+    pub fn prompt(mut self, p: &str) -> Self {
         self.user_prompt = p.to_owned();
         self
     }
 
     /// Sets a phrase that, when entered, will end the program early.
-    pub fn quit(&mut self, q: &str) -> &mut Self {
+    pub fn quit(mut self, q: &str) -> Self {
         self.user_quit = Some(q.into());
         self
     }
 
     /// Sets an error message that will be displayed to the user if they enter something invalid.
-    pub fn err_msg(&mut self, m: &str) -> &mut Self {
+    pub fn err_msg(mut self, m: &str) -> Self {
         self.user_errmsg = Some(m.into());
         self
     }
